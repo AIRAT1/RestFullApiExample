@@ -24,11 +24,9 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.1.1'
-
     compile 'com.koushikdutta.ion:ion:2.1.8'
-
     compile 'com.jakewharton:butterknife:8.2.1'
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
-
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile files('libs/stanford-android-lib.jar')
 }
