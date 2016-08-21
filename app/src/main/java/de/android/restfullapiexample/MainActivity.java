@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         with Ion library
         */
     private void setChuckNorrisJokeToView(String data) {
+        setResponseToView(data);
+    }
+    private void setResponseToView (String data) {
         try {
             JSONObject response = new JSONObject(data);
             String joke = response.getJSONObject("value").getString("joke");
@@ -96,13 +99,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String data) {
             super.onPostExecute(data);
-            try {
-                JSONObject response = new JSONObject(data);
-                String joke = response.getJSONObject("value").getString("joke");
-                chuckNorrisTextView.setText(joke);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            setResponseToView(data);
         }
+
     }
 }
