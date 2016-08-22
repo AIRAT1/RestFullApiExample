@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,28 +35,44 @@ public class MainActivity extends AppCompatActivity {
         /*
         with Ion library
         */
-//        Ion.with(this)
-//                .load("http://api.icndb.com/jokes/random")
-//                .asString()
-//                .setCallback(new FutureCallback<String>() {
-//                    @Override
-//                    public void onCompleted(Exception e, String data) {
-//                        setChuckNorrisJokeToView(data);
-//                    }
-//                });
+        Ion.with(this)
+                .load("http://api.icndb.com/jokes/random")
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String data) {
+                        setChuckNorrisJokeToView(data);
+                    }
+                });
 
         /*
         with async task
          */
-        new ChuckNorrisAsyncTask().execute("http://api.icndb.com/jokes/random");
+//        new ChuckNorrisAsyncTask().execute("http://api.icndb.com/jokes/random");
     }
 
         /*
         with Ion library
         */
     private void setChuckNorrisJokeToView(String data) {
-        setResponseToView(data);
+//        setResponseToView(data);
+        /*
+        with GSON library
+         */
+        setGsonResponseToView(data);
     }
+
+    private void setGsonResponseToView(String data) {
+        try {
+            String value = new JSONObject(data).getString("value");
+            Gson gson = new Gson();
+            Value pojoValue = gson.fromJson(value, Value.class);
+            chuckNorrisTextView.setText(pojoValue.getJoke());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setResponseToView (String data) {
         try {
             JSONObject response = new JSONObject(data);
