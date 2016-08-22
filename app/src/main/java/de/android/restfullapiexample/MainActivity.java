@@ -3,6 +3,7 @@ package de.android.restfullapiexample;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,18 +22,51 @@ import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.android.restfullapiexample.data.models.Model;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG ="TAG";
     @BindView(R.id.chuckNorrisTextView) TextView chuckNorrisTextView;
+//    @BindView(R.id.retrofitButton) Button retrofitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+//        retrofitButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "1");
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl("http://api.icndb.com/")
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                        .build();
+//                Log.d(TAG, "2");
+//                ChuckNorrisAPI chuck = retrofit.create(ChuckNorrisAPI.class);
+//                Call<Model> joke = chuck.randomJoke();
+//                Log.d(TAG, "3");
+//                joke.enqueue(new Callback<Model>() {
+//                    @Override
+//                    public void onResponse(Call<Model> call, Response<Model> response) {
+//                        Log.d(TAG, "4");
+//                        String data = response.body().getValue().getJoke();
+//                        Log.d(TAG, data);
+//                        chuckNorrisTextView.setText(data);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Model> call, Throwable t) {
+//
+//                    }
+//                });
+//            }
+//        });
     }
     public void chuckNorrisClick(View view) {
         /*
@@ -92,7 +126,20 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         ChuckNorrisAPI chuck = retrofit.create(ChuckNorrisAPI.class);
-        Call<String> joke = chuck.randomJoke();
+        Call<Model> joke = chuck.randomJoke();
+        joke.enqueue(new Callback<Model>() {
+            @Override
+            public void onResponse(Call<Model> call, Response<Model> response) {
+                String data = response.body().getValue().getJoke();
+                Log.d(TAG, data);
+                chuckNorrisTextView.setText(data);
+            }
+
+            @Override
+            public void onFailure(Call<Model> call, Throwable t) {
+
+            }
+        });
     }
 
     /*
