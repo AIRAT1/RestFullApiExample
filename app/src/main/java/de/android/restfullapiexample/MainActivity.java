@@ -21,6 +21,9 @@ import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.chuckNorrisTextView) TextView chuckNorrisTextView;
@@ -82,6 +85,16 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    public void chuckNorrisRetrofit2Click(View view) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.icndb.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ChuckNorrisAPI chuck = retrofit.create(ChuckNorrisAPI.class);
+        Call<String> joke = chuck.randomJoke();
+    }
+
     /*
     with async task
      */
