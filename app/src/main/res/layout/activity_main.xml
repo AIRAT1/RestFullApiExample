@@ -17,8 +17,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="chuckNorrisClick"
-            android:text="Chuck Norris"
+            android:onClick="onION"
+            android:text="ION"
+            android:textAllCaps="false"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onION_plus_GSON"
+            android:text="ION + GSON"
+            android:textAllCaps="false"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onAsyncTask"
+            android:text="AsyncTask"
             android:textAllCaps="false"/>
         <Button
             android:id="@+id/retrofitButton"
@@ -27,6 +41,13 @@
             android:layout_weight="1"
             android:onClick="chuckNorrisRetrofit2Click"
             android:text="Retrofit 2"
+            android:textAllCaps="false"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onBroadcast"
+            android:text="Broadcast"
             android:textAllCaps="false"/>
     </LinearLayout>
     <TextView
