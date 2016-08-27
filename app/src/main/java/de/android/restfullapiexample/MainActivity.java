@@ -32,7 +32,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+/*
+ * 5 different methods to become and parsing JSON from REST service
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG ="TAG";
     private static final String ACTION_DONE = "ACTION_DONE";
@@ -48,59 +50,47 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(ACTION_DONE);
         registerReceiver(new MyBroadcastReceiver(), filter);
     }
+    /*
+     * ION + manual parsing
+     */
     public void onION(View view) {
-        /*
-         *with Ion library
-         */
         Ion.with(this)
                 .load("http://api.icndb.com/jokes/random")
                 .asString()
                 .setCallback(new FutureCallback<String>() {
                     @Override
                     public void onCompleted(Exception e, String data) {
-                        setChuckNorrisJokeToView(data);
+                        setResponseToView(data);
                     }
                 });
-
-        /*
-         *with async task
-         */
-//        new ChuckNorrisAsyncTask().execute("http://api.icndb.com/jokes/random");
     }
 
-        /*
-         *with Ion library
-         */
-    private void setChuckNorrisJokeToView(String data) {
-        setResponseToView(data);
-        /*
-         *with GSON library
-         */
-//        setGsonResponseToView(data);
+    /*
+     * ION + GSON parsing
+     */
+    public void onION_plus_GSON(View view) {
+        Ion.with(this)
+                .load("http://api.icndb.com/jokes/random")
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String data) {
+                        setGsonResponseToView(data);
+                    }
+                });
     }
 
-    private void setGsonResponseToView(String data) {
-        try {
-            String value = new JSONObject(data).getString("value");
-            Gson gson = new Gson();
-            Value pojoValue = gson.fromJson(value, Value.class);
-            chuckNorrisTextView.setText(pojoValue.getJoke());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    /*
+     * with async task
+     */
+    public void onAsyncTask(View view) {
+        new ChuckNorrisAsyncTask().execute("http://api.icndb.com/jokes/random");
     }
 
-    private void setResponseToView (String data) {
-        try {
-            JSONObject response = new JSONObject(data);
-            String joke = response.getJSONObject("value").getString("joke");
-            chuckNorrisTextView.setText(joke);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void chuckNorrisRetrofit2Click(View view) {
+    /*
+     * Retrofit 2
+     */
+    public void onRetrofit(View view) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.icndb.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -122,8 +112,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /*
+     * BroadcastReceiver
+     */
     public void onBroadcast(View view) {
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -159,24 +151,26 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    public void onION_plus_GSON(View view) {
-        Ion.with(this)
-                .load("http://api.icndb.com/jokes/random")
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String data) {
-                        setGsonResponseToView(data);
-                    }
-                });
+    private void setResponseToView (String data) {
+        try {
+            JSONObject response = new JSONObject(data);
+            String joke = response.getJSONObject("value").getString("joke");
+            chuckNorrisTextView.setText(joke);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void onAsyncTask(View view) {
+    private void setGsonResponseToView(String data) {
+        try {
+            String value = new JSONObject(data).getString("value");
+            Gson gson = new Gson();
+            Value pojoValue = gson.fromJson(value, Value.class);
+            chuckNorrisTextView.setText(pojoValue.getJoke());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
-
-    /*
-     * with async task
-     */
     private class ChuckNorrisAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -216,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             String data = intent.getStringExtra("text");
